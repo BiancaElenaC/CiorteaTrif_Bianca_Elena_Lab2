@@ -28,7 +28,13 @@ namespace CiorteaTrif_Bianca_Elena_Lab2.Pages.Borrowings
                 return NotFound();
             }
 
-            var borrowing = await _context.Borrowing.FirstOrDefaultAsync(m => m.ID == id);
+            //var borrowing = await _context.Borrowing.FirstOrDefaultAsync(m => m.ID == id);
+            var borrowing = await _context.Borrowing
+                .Include(b => b.Book)
+                .ThenInclude(b => b.Author)
+                .Include(b => b.Member)  // Am inclus detalii despre autor si membru
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (borrowing == null)
             {
                 return NotFound();

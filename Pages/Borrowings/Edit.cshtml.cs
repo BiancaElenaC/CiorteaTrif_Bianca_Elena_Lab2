@@ -30,16 +30,37 @@ namespace CiorteaTrif_Bianca_Elena_Lab2.Pages.Borrowings
                 return NotFound();
             }
 
-            var borrowing =  await _context.Borrowing.FirstOrDefaultAsync(m => m.ID == id);
+            //var borrowing =  await _context.Borrowing.FirstOrDefaultAsync(m => m.ID == id);
+            var borrowing = await _context.Borrowing
+            .Include(b => b.Book)
+            .Include(b => b.Member)
+            .FirstOrDefaultAsync(m => m.ID == id);
+
             if (borrowing == null)
             {
                 return NotFound();
             }
             Borrowing = borrowing;
-           ViewData["BookID"] = new SelectList(_context.Book, "ID", "ID");
-           ViewData["MemberID"] = new SelectList(_context.Member, "ID", "ID");
+            var bookList = _context.Book
+            .Include(b => b.Author)
+            .Select(x => new
+                 {
+                 x.ID,
+                 BookDetails = x.Title + " - " + x.Author.LastName + " " + x.Author.FirstName
+                 });
+            //ViewData["BookID"] = new SelectList(_context.Book, "ID", "ID");
+            ViewData["BookID"] = new SelectList(bookList, "ID", "BookDetails");
+
+            //ViewData["MemberID"] = new SelectList(_context.Member, "ID", "ID");
+            ViewData["MemberID"] = new SelectList(_context.Member
+            .Select(m => new
+                 {
+                 m.ID,
+                 FullName = m.FirstName + " " + m.LastName
+                }), "ID", "FullName");
+                
             return Page();
-        }
+            }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
