@@ -15,6 +15,10 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Books/Index");
     options.Conventions.AllowAnonymousToPage("/Books/Details");
     options.Conventions.AuthorizeFolder("/Members", "AdminPolicy");
+
+    //Laborator 6 Sarcina 1
+    options.Conventions.AuthorizeFolder("/Publishers", "AdminPolicy");
+    options.Conventions.AuthorizeFolder("/Categories", "AdminPolicy");
 });
 
 builder.Services.AddDbContext<CiorteaTrif_Bianca_Elena_Lab2Context>(options =>
